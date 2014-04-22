@@ -1,4 +1,2 @@
-yacf
-====
-
-Yet another chord finder
+README for yacf
+==========================
