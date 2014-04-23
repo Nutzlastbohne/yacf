@@ -1,12 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html ng-app>
 <head>
     <title>No Chord Untouched</title>
 </head>
-<body>
+<body ng-init="chords=[{name:'A5', root:'A'}, {name:'A5add7', root:'A'}, {name:'C5', root:'C'}, {name:'C7add9', root:'C'}, {name:'B#', root:'B#'}]">
     <h2>Every Chord Ever</h2>
     <br>
     <p>Gonna catch em all!</p>
+    <div class="container">
+        Chord Name: <input type="text" ng-model="name" /> {{name}}
+        <br>
+        <h3>chords like that</h3>
+        <br>
+        <ul>
+            <li ng-repeat="chord in chords | filter:name | orderBy:'root'">{{ chord.root }} - {{ chord.name }}</li>
+        </ul>
+    </div>
+    <script src="bower_components/angular/angular.js"></script>
 </body>
 
 </html>
