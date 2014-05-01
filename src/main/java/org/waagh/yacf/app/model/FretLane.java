@@ -31,7 +31,7 @@ public class FretLane implements ICord {
 		List<Integer> noteOccurences = new ArrayList<>();
 
 		for (Note cordNote : notes) {
-			if (cordNote.simpleMatch(note)) {
+			if (cordNote.isRelativeMatch(note)) {
 				noteOccurences.add(getNotePosition(cordNote));
 			}
 		}

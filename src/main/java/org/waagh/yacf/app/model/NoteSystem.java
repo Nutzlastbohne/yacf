@@ -5,22 +5,22 @@ import java.util.List;
 
 public class NoteSystem {
 
-	List<BasicNote> chromaticScale;
+	private List<BasicNote> baseScale;
 
 	public NoteSystem() {
-		chromaticScale = new LinkedList<>();
-		chromaticScale.add(BasicNote.A);
-		chromaticScale.add(BasicNote.A_SHARP);
-		chromaticScale.add(BasicNote.B);
-		chromaticScale.add(BasicNote.C);
-		chromaticScale.add(BasicNote.C_SHARP);
-		chromaticScale.add(BasicNote.D);
-		chromaticScale.add(BasicNote.D_SHARP);
-		chromaticScale.add(BasicNote.E);
-		chromaticScale.add(BasicNote.F);
-		chromaticScale.add(BasicNote.F_SHARP);
-		chromaticScale.add(BasicNote.G);
-		chromaticScale.add(BasicNote.G_SHARP);
+		baseScale = new LinkedList<>();
+		baseScale.add(BasicNote.C);
+		baseScale.add(BasicNote.C_SHARP);
+		baseScale.add(BasicNote.D);
+		baseScale.add(BasicNote.D_SHARP);
+		baseScale.add(BasicNote.E);
+		baseScale.add(BasicNote.F);
+		baseScale.add(BasicNote.F_SHARP);
+		baseScale.add(BasicNote.G);
+		baseScale.add(BasicNote.G_SHARP);
+		baseScale.add(BasicNote.A);
+		baseScale.add(BasicNote.A_SHARP);
+		baseScale.add(BasicNote.B);
 	}
 
 	public BasicNote nextBasicNote(BasicNote basicNote) {
@@ -33,43 +33,51 @@ public class NoteSystem {
 
 	public BasicNote getBasicNoteAt(BasicNote basicNote, int steps) {
 		int nextIndex;
-		int currentIndex = chromaticScale.indexOf(basicNote);
-		steps = steps % chromaticScale.size();                    // prevent stepping out of bounds
+		int currentIndex = baseScale.indexOf(basicNote);
+		steps = steps % baseScale.size();                    // prevent stepping out of bounds
 
 		if (currentIndex + steps < 0) {
-			nextIndex = chromaticScale.size() - steps;
+			nextIndex = baseScale.size() - steps;
 		} else {
-			nextIndex = (currentIndex + steps) % chromaticScale.size();
+			nextIndex = (currentIndex + steps) % baseScale.size();
 		}
 
-		return chromaticScale.get(nextIndex);
+		return baseScale.get(nextIndex);
 	}
 
-	public Note previousNote(Note note) {
+	public Note getLeftHandNote(Note note) {
 		return getNoteAt(note, -1);
 	}
 
-	public Note nextNote(Note note) {
+	public Note getRightHandNote(Note note) {
 		return getNoteAt(note, +1);
 	}
 
 	public Note getNoteAt(Note note, int halfToneSteps) {
 		int nextRelativeIndex;
 		int octaveSteps;
-		int currentIndex = chromaticScale.indexOf(note.basicNote);
+		int currentIndex = baseScale.indexOf(note.getBasicNote());
 		int nextIndex = currentIndex + halfToneSteps;
 
 		if (nextIndex < 0) {
-			octaveSteps = (int) Math.floor(nextIndex / (double) chromaticScale.size());
-			nextRelativeIndex = chromaticScale.size() + (nextIndex % chromaticScale.size());
+			octaveSteps = (int) Math.floor(nextIndex / (double) baseScale.size());
+			nextRelativeIndex = baseScale.size() + (nextIndex % baseScale.size());
 		} else {
-			octaveSteps = nextIndex / chromaticScale.size();
-			nextRelativeIndex = nextIndex % chromaticScale.size();
+			octaveSteps = nextIndex / baseScale.size();
+			nextRelativeIndex = nextIndex % baseScale.size();
 		}
 
-		BasicNote nextBasicNote = chromaticScale.get(nextRelativeIndex);
-		int octave = note.octave + octaveSteps;
+		BasicNote nextBasicNote = baseScale.get(nextRelativeIndex);
+		int octave = note.getOctave() + octaveSteps;
 
 		return new Note(nextBasicNote, octave);
+	}
+
+	public List<BasicNote> getBaseScale() {
+		return baseScale;
+	}
+
+	public void setBaseScale(List<BasicNote> baseScale) {
+		this.baseScale = baseScale;
 	}
 }
