@@ -2,6 +2,10 @@ package org.waagh.yacf.app.model;
 
 import java.util.*;
 
+/*
+	TODO: Build formula from Chord Name
+	TODO:
+ */
 public class Chords {
 
 	private String formula;

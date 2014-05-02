@@ -2,15 +2,18 @@ package org.waagh.yacf.app.model;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.util.List;
+
 public class Note {
 	private static double STANDARD_PITCH_A = 440L;    // 440Hz = a'
 
+	private NoteSystem noteSystem;
 	private BasicNote basicNote;
 	private boolean isOptional;
 	private boolean isRelativeOctave;
-	private int octave;
 	private double frequency;
 	private double baseFrequency = STANDARD_PITCH_A;
+	private int octave;
 
 	public Note(BasicNote basicNote, int octave, boolean isRelativeOctave) {
 		this.basicNote = basicNote;
@@ -18,6 +21,7 @@ public class Note {
 		this.isRelativeOctave = isRelativeOctave;
 		this.isOptional = false;
 		this.frequency = calculateNoteFrequency();
+		this.noteSystem = new NoteSystem();
 	}
 
 	public Note(BasicNote basicNote, int octave) {
@@ -29,13 +33,13 @@ public class Note {
 	}
 
 	public boolean isRelativeMatch(Note otherNote) {
-		boolean isSimpleMatch = false;
+		boolean isRelativeMatch = false;
 
 		if (this.basicNote.equals(otherNote.basicNote)) {
-			isSimpleMatch = true;
+			isRelativeMatch = true;
 		}
 
-		return isSimpleMatch;
+		return isRelativeMatch;
 	}
 
 	public boolean isExactMatch(Note otherNote) {
@@ -137,5 +141,34 @@ public class Note {
 			noteName = getOctaveSymbol() + noteName;
 		}
 		return noteName;
+	}
+
+	public Note getPreviousNote() {
+		return getNoteAt(-1);
+	}
+
+	public Note getNextNote() {
+		return getNoteAt(1);
+	}
+
+	public Note getNoteAt(int halfToneSteps) {
+		int nextRelativeIndex;
+		int octaveSteps;
+		List<BasicNote> baseScale = noteSystem.getBaseScale();
+		int currentIndex = baseScale.indexOf(this.getBasicNote());
+		int nextIndex = currentIndex + halfToneSteps;
+
+		if (nextIndex < 0) {
+			octaveSteps = (int) Math.floor(nextIndex / (double) baseScale.size());
+			nextRelativeIndex = baseScale.size() + (nextIndex % baseScale.size());
+		} else {
+			octaveSteps = nextIndex / baseScale.size();
+			nextRelativeIndex = nextIndex % baseScale.size();
+		}
+
+		BasicNote nextBasicNote = baseScale.get(nextRelativeIndex);
+		int octave = this.getOctave() + octaveSteps;
+
+		return new Note(nextBasicNote, octave);
 	}
 }

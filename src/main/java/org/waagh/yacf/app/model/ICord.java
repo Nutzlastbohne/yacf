@@ -16,7 +16,7 @@ public interface ICord {
 	 *
 	 * @param note tuning of the string
 	 */
-	public void setTuning(Note note);
+	public void resetTuning(Note note);
 
 	/**
 	 * @param position
