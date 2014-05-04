@@ -6,12 +6,12 @@ import org.junit.Test;
 
 import java.util.*;
 
-public class ChordsTest {
+public class ChordUtilsTest {
 
 	/**
 	 * Object under test
 	 */
-	Chords chords;
+	ChordUtils chordUtils;
 
 	List<BasicNote> cMajor;    // C D E F G A B C
 	List<BasicNote> eMajor;    // E F# G# A B C# D# E
@@ -21,7 +21,7 @@ public class ChordsTest {
 
 	@Before
 	public void before() {
-		chords = new Chords();
+		chordUtils = new ChordUtils();
 
 		cMajor = new ArrayList<>();
 		cMajor.add(BasicNote.C);
@@ -49,7 +49,7 @@ public class ChordsTest {
 		ChordFormula expectedChordFormula = ChordFormula.MajorSeventh;
 		String symbol = expectedChordFormula.symbol;
 		String errorMessage = "unexpected formula for symbol '%s'!\nexpected:\t%s\nactual:\t%s";
-		ChordFormula actualChordFormula = chords.getChordFormulaBySymbol(symbol);
+		ChordFormula actualChordFormula = chordUtils.getChordFormulaBySymbol(symbol);
 
 		boolean formulasMatch = actualChordFormula == expectedChordFormula;
 		Assert.assertTrue(String.format(errorMessage, symbol, expectedChordFormula, actualChordFormula), formulasMatch);
@@ -60,7 +60,7 @@ public class ChordsTest {
 		ChordFormula expectedChordFormula = ChordFormula.MinorMajorSevenFlatFifth;
 		String symbol = expectedChordFormula.symbol;
 		String errorMessage = "unexpected formula for symbol '%s'!\nexpected:\t%s\nactual:\t%s";
-		ChordFormula actualChordFormula = chords.getChordFormulaBySymbol(symbol);
+		ChordFormula actualChordFormula = chordUtils.getChordFormulaBySymbol(symbol);
 
 		boolean formulasMatch = actualChordFormula == expectedChordFormula;
 		Assert.assertTrue(String.format(errorMessage, symbol, expectedChordFormula, actualChordFormula), formulasMatch);
@@ -83,7 +83,7 @@ public class ChordsTest {
 
 		for (String testSymbol : symbolToFormulaMap.keySet()) {
 			expectedChordFormula = symbolToFormulaMap.get(testSymbol);
-			actualChordFormula = chords.getChordFormulaBySymbol(testSymbol);
+			actualChordFormula = chordUtils.getChordFormulaBySymbol(testSymbol);
 
 			formulasMatch = actualChordFormula == expectedChordFormula;
 			Assert.assertTrue(String.format(errorMessage, testSymbol, expectedChordFormula, actualChordFormula), formulasMatch);
@@ -92,7 +92,7 @@ public class ChordsTest {
 
 	@Test
 	public void getCmajorScale() {
-		List<BasicNote> actualCmaj = chords.mapScaleToRootNote(BasicNote.C);
+		List<BasicNote> actualCmaj = chordUtils.mapScaleToRootNote(BasicNote.C);
 		String errorMessage = "Scale notes for root %s don't match: \nexpected:\t %s \nactual:\t %s";
 		boolean scalesMatch = actualCmaj.containsAll(cMajor);
 
@@ -101,7 +101,7 @@ public class ChordsTest {
 
 	@Test
 	public void getEmajorScale() {
-		List<BasicNote> actualEmaj = chords.mapScaleToRootNote(BasicNote.E);
+		List<BasicNote> actualEmaj = chordUtils.mapScaleToRootNote(BasicNote.E);
 		String errorMessage = "Scale notes for root %s don't match: \nexpected:\t %s \nactual:\t %s";
 		boolean scalesMatch = actualEmaj.containsAll(eMajor);
 		Assert.assertTrue(String.format(errorMessage, BasicNote.E, eMajor, actualEmaj), scalesMatch);
@@ -110,11 +110,11 @@ public class ChordsTest {
 	@Test
 	public void getEmajorChord() {
 		String errorMessage = "ChordNotes for symbol %s don't match: \nexpected:\t %s \nactual:\t %s";
-		List<Note> expectedEmajor = chords.buildChord(BasicNote.E, BasicNote.G_SHARP, BasicNote.B);
+		List<Note> expectedEmajor = chordUtils.buildChord(BasicNote.E, BasicNote.G_SHARP, BasicNote.B);
 		String symbol = "EMaj";
-		List<Note> actual = chords.getNotesForChord(symbol);
+		List<Note> actual = chordUtils.getNotesForChord(symbol);
 
-		boolean notesMatch = chords.chordNotesMatch(expectedEmajor, actual);
+		boolean notesMatch = chordUtils.chordNotesMatch(expectedEmajor, actual);
 		Assert.assertTrue(String.format(errorMessage, symbol, expectedEmajor, actual), notesMatch);
 	}
 
@@ -122,10 +122,10 @@ public class ChordsTest {
 	public void getCsharpMinorChord() {
 		String errorMessage = "ChordNotes for symbol %s don't match: \nexpected:\t %s \nactual:\t %s";
 		String symbol = "C#m";
-		List<Note> expectedCminor = chords.buildChord(BasicNote.C_SHARP, BasicNote.E, BasicNote.G_SHARP);
-		List<Note> actual = chords.getNotesForChord(symbol);
+		List<Note> expectedCminor = chordUtils.buildChord(BasicNote.C_SHARP, BasicNote.E, BasicNote.G_SHARP);
+		List<Note> actual = chordUtils.getNotesForChord(symbol);
 
-		boolean notesMatch = chords.chordNotesMatch(expectedCminor, actual);
+		boolean notesMatch = chordUtils.chordNotesMatch(expectedCminor, actual);
 		Assert.assertTrue(String.format(errorMessage, symbol, expectedCminor, actual), notesMatch);
 	}
 
@@ -133,10 +133,10 @@ public class ChordsTest {
 	public void getBmaj13() {
 		String errorMessage = "ChordNotes for symbol %s don't match: \nexpected:\t %s \nactual:\t %s";
 		String symbol = "Bmaj13";
-		List<Note> expectedBmaj13 = chords.buildChord(BasicNote.B, BasicNote.D_SHARP, BasicNote.F_SHARP, BasicNote.A_SHARP, BasicNote.B, BasicNote.D_SHARP, BasicNote.F_SHARP);
-		List<Note> actual = chords.getNotesForChord(symbol);
+		List<Note> expectedBmaj13 = chordUtils.buildChord(BasicNote.B, BasicNote.D_SHARP, BasicNote.F_SHARP, BasicNote.A_SHARP, BasicNote.B, BasicNote.D_SHARP, BasicNote.F_SHARP);
+		List<Note> actual = chordUtils.getNotesForChord(symbol);
 
-		boolean notesMatch = chords.chordNotesMatchExactly(expectedBmaj13, actual);
+		boolean notesMatch = chordUtils.chordNotesMatchExactly(expectedBmaj13, actual);
 		Assert.assertTrue(String.format(errorMessage, symbol, expectedBmaj13, actual), notesMatch);
 	}
 
@@ -144,10 +144,10 @@ public class ChordsTest {
 	public void getFSharpDim7() {
 		String errorMessage = "ChordNotes for symbol %s don't match: \nexpected:\t %s \nactual:\t %s";
 		String symbol = "F#Dim7(°7)";
-		List<Note> expectedFsharpDim7 = chords.buildChord(BasicNote.F_SHARP, BasicNote.A, BasicNote.C, BasicNote.D_SHARP);
-		List<Note> actual = chords.getNotesForChord(symbol);
+		List<Note> expectedFsharpDim7 = chordUtils.buildChord(BasicNote.F_SHARP, BasicNote.A, BasicNote.C, BasicNote.D_SHARP);
+		List<Note> actual = chordUtils.getNotesForChord(symbol);
 
-		boolean notesMatch = chords.chordNotesMatchExactly(expectedFsharpDim7, actual);
+		boolean notesMatch = chordUtils.chordNotesMatchExactly(expectedFsharpDim7, actual);
 		Assert.assertTrue(String.format(errorMessage, symbol, expectedFsharpDim7, actual), notesMatch);
 	}
 }

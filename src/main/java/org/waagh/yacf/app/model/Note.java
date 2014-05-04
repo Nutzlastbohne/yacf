@@ -5,6 +5,17 @@ import org.apache.commons.lang.StringUtils;
 import java.util.List;
 
 public class Note {
+
+	public class Position {
+		int stringIndex;
+		int fretIndex;
+
+		public Position(int stringIndex, int fretIndex) {
+			this.stringIndex = stringIndex;
+			this.fretIndex = fretIndex;
+		}
+	}
+
 	private static double STANDARD_PITCH_A = 440L;    // 440Hz = a'
 
 	private NoteSystem noteSystem;
@@ -14,6 +25,7 @@ public class Note {
 	private double frequency;
 	private double baseFrequency = STANDARD_PITCH_A;
 	private int octave;
+	private Position notePosition;
 
 	public Note(BasicNote basicNote, int octave, boolean isRelativeOctave) {
 		this.basicNote = basicNote;
@@ -22,6 +34,11 @@ public class Note {
 		this.isOptional = false;
 		this.frequency = calculateNoteFrequency();
 		this.noteSystem = new NoteSystem();
+	}
+
+	public Note(BasicNote basicNote, int octave, int stringIndex, int fretIndex) {
+		this(basicNote, octave, false);
+		this.notePosition = new Position(stringIndex, fretIndex);
 	}
 
 	public Note(BasicNote basicNote, int octave) {
@@ -64,6 +81,14 @@ public class Note {
 	public int getTotalDistance(Note otherNote) {
 		int distance = otherNote.getAbsoluteHalfTone() - this.getAbsoluteHalfTone();
 		return distance;
+	}
+
+	public boolean isHigherThan(Note otherNote) {
+		return getTotalDistance(otherNote) > 0;
+	}
+
+	public boolean isLowerThan(Note otherNote) {
+		return getTotalDistance(otherNote) < 0;
 	}
 
 	private double calculateNoteFrequency() {
@@ -110,6 +135,18 @@ public class Note {
 		this.octave = octave;
 	}
 
+	public Position getNotePosition() {
+		return notePosition;
+	}
+
+	public void setNotePosition(Position notePosition) {
+		this.notePosition = notePosition;
+	}
+
+	public void setNotePosition(int stringIndex, int fretIndex) {
+		this.notePosition = new Position(stringIndex, fretIndex);
+	}
+
 	@Override public String toString() {
 		String noteAsString = getClassicNoteSymbol();
 
@@ -144,14 +181,14 @@ public class Note {
 	}
 
 	public Note getPreviousNote() {
-		return getNoteAt(-1);
+		return getNoteAtDistance(-1);
 	}
 
 	public Note getNextNote() {
-		return getNoteAt(1);
+		return getNoteAtDistance(1);
 	}
 
-	public Note getNoteAt(int halfToneSteps) {
+	public Note getNoteAtDistance(int halfToneSteps) {
 		int nextRelativeIndex;
 		int octaveSteps;
 		List<BasicNote> baseScale = noteSystem.getBaseScale();

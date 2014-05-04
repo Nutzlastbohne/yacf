@@ -30,7 +30,7 @@ public interface ICord {
 	 * @param note find this note
 	 * @return all positions or < 0 if not present
 	 */
-	public List<Integer> getNotePositions(Note note);
+	public List<Integer> getNotePositions(BasicNote note);
 
 	/**
 	 * Returns the position of that exact note, taking the octave into account

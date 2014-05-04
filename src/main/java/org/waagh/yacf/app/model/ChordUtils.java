@@ -6,7 +6,7 @@ import java.util.*;
 	TODO: Build formula from Chord Name
 	TODO:
  */
-public class Chords {
+public class ChordUtils {
 
 	private String formula;
 	private int underlyingScalePattern[];
@@ -15,9 +15,9 @@ public class Chords {
 	private static String PRIMITIVE_NOTE_MATCH = "[CDEFGAB]";
 
 	/**
-	 * Initialize the Chords class with the default western scale (Major)
+	 * Initialize the ChordUtils class with the default western scale (Major)
 	 */
-	public Chords() {
+	public ChordUtils() {
 		underlyingScalePattern = new int[] { 2, 2, 1, 2, 2, 2, 1 };
 
 		replacements = new HashMap<>();
@@ -40,7 +40,7 @@ public class Chords {
 
 	}
 
-	public Chords(int... underlyingScalePattern) {
+	public ChordUtils(int... underlyingScalePattern) {
 		this();
 		this.underlyingScalePattern = underlyingScalePattern;
 	}
