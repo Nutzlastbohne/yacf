@@ -1,6 +1,6 @@
 package org.waagh.yacf.app.model;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 

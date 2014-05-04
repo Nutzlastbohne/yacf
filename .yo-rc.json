@@ -1,8 +1,0 @@
-{
-  "generator-jhipster": {
-    "baseName": "yacf",
-    "packageName": "org.waagh.yacf",
-    "packageFolder": "org/waagh/yacf",
-    "hibernateCache": "no"
-  }
-}

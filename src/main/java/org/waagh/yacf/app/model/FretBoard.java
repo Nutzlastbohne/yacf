@@ -1,8 +1,8 @@
 package org.waagh.yacf.app.model;
 
-import org.apache.commons.lang.ArrayUtils;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class FretBoard {
 	private List<ICord> strings;
