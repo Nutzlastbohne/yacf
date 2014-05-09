@@ -4,15 +4,19 @@ import java.util.List;
 
 public interface INoteSystem {
 
-//	public List<AbstractNote> defineNotes();
-	public UniqueNote getNextLowerNote(UniqueNote note);
-	public UniqueNote getNextHigherNote(UniqueNote note);
-	public UniqueNote getNoteXStepsAway(UniqueNote baseNote, int steps);
-	public int getRelativeNoteIndex(AbstractNote note);
-	public int getAbsoluteNoteIndex(AbstractNote note);
-	public double calculateFrequency(AbstractNote note);
+	List<INote> mapScaleToRoot(IScale scale, INote root);
 
-	public void setStandardPitch(double standardPitch);
-	public double getStandardPich();
+	List<Integer> getScalePattern(String scaleName);
+	List<Integer> getNormalisedScalePattern(String scaleName);
+
+	void addScalePattern(String name, List<Integer> scalePattern);
+
+	double getStandardPitch();
+
+	double getFrequency(INote note);
+
+	int getAbsoluteIndex(INote note);
+
+	int getRelativeIndex(INote note);
 
 }

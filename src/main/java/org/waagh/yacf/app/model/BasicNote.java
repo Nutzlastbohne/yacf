@@ -1,57 +1,51 @@
 package org.waagh.yacf.app.model;
 
-public enum BasicNote {
-	C("C"),
-	C_SHARP("C#", "Db"),
-	D("D"),
-	D_SHARP("D#", "Eb"),
-	E("E"),
-	F("F", "E#"),
-	F_SHARP("F#", "Gb"),
-	G("G"),
-	G_SHARP("G#", "Ab"),
-	A("A"),
-	A_SHARP("A#", "Bb"),
-	B("B", "Cb");
+public class BasicNote implements INote {
 
-	public String name;
-	public String altName;
+	private String name;
+	private INote previousNote;
+	private INote nextNote;
+	private int ordinal;
 
-	BasicNote(String name, String altName) {
+	public BasicNote(String name, int ordinal) {
 		this.name = name;
-		this.altName = altName;
+		this.ordinal = ordinal;
 	}
 
-	BasicNote(String name) {
-		this.name = name;
-		this.altName = name;
+	@Override public String getName() {
+		return name;
 	}
 
-	private BasicNote getNoteAt(int index) {
-		index = sanitizeIndex(this.ordinal() + index);
-		return BasicNote.values()[index];
+	@Override public int getOrdinal() {
+		return 0;
 	}
 
-	BasicNote getNextNote(BasicNote startpoint) {
-		return getNoteAt(startpoint.ordinal() + 1);
+	@Override public INote getNext() {
+		return nextNote;
 	}
 
-	BasicNote getPreviousNote(BasicNote startpoint) {
-		return getNoteAt(startpoint.ordinal() - 1);
+	@Override public INote getPrevious() {
+		return previousNote;
 	}
 
-	public BasicNote getNoteAtDistance(int distance) {
-		int index = sanitizeIndex(this.ordinal() + distance);
-		return BasicNote.values()[index];
+	@Override public INote setNext(INote nextNote) {
+		return this.nextNote = nextNote;
 	}
 
-	private static int sanitizeIndex(int index) {
-		int sanitizedIndex = index % BasicNote.values().length;
+	@Override public INote setPrevious(INote previousNote) {
+		return this.previousNote = previousNote;
+	}
 
-		if (index < 0) {
-			sanitizedIndex = BasicNote.values().length + sanitizedIndex;
+	@Override public INote getNoteXStepsAway(int steps) {	//TODO Abstract candidate?
+		INote distantNote = this;
+		boolean moveBackwards = steps < 0;
+		steps = Math.abs(steps);
+
+		while (steps > 0) {
+			distantNote = moveBackwards ? distantNote.getPrevious() : distantNote.getNext();
+			steps--;
 		}
 
-		return sanitizedIndex;
+		return distantNote;
 	}
 }
