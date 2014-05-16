@@ -1,6 +1,9 @@
-package org.waagh.yacf.app.model;
+package org.waagh.yacf.app.model.chords;
+
+import org.waagh.yacf.app.model.Notes.IAbsoluteNote;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class AbsoluteChord implements IChord<IAbsoluteNote> {
@@ -11,7 +14,7 @@ public class AbsoluteChord implements IChord<IAbsoluteNote> {
 		absoluteNotes = new ArrayList<>();
 	}
 
-	public AbsoluteChord(List<IRelativeNote> relativeNotes, IAbsoluteNote rootNote) {
+	public AbsoluteChord(IAbsoluteNote rootNote, List<Integer> formula, List<Integer> baseScale) {
 		// TODO
 	}
 
@@ -24,6 +27,18 @@ public class AbsoluteChord implements IChord<IAbsoluteNote> {
 	}
 
 	@Override public List<IAbsoluteNote> getNotes() {
+		return null;
+	}
+
+	@Override public Collection<IAbsoluteNote> addNotes(Collection<IAbsoluteNote> newNotes) {
+		return null;
+	}
+
+	@Override public Collection<IAbsoluteNote> addNote(IAbsoluteNote newNote, boolean isOptional) {
+		return null;
+	}
+
+	@Override public Collection<IAbsoluteNote> setNotes(Collection<IAbsoluteNote> newNotes) {
 		return null;
 	}
 

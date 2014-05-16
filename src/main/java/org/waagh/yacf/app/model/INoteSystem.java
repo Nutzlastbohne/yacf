@@ -1,5 +1,7 @@
 package org.waagh.yacf.app.model;
 
+import org.waagh.yacf.app.model.Notes.INote;
+
 import java.util.List;
 
 public interface INoteSystem {

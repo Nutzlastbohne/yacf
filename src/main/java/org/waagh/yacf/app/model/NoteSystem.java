@@ -1,5 +1,13 @@
 package org.waagh.yacf.app.model;
 
+import org.waagh.yacf.app.controller.ChordUtils;
+import org.waagh.yacf.app.model.Notes.BasicNote;
+import org.waagh.yacf.app.model.Notes.INote;
+import org.waagh.yacf.app.model.Notes.RelativeNote;
+import org.waagh.yacf.app.model.chords.ChordFormula;
+import org.waagh.yacf.app.model.chords.IChord;
+import org.waagh.yacf.app.model.chords.RelativeChord;
+
 import java.util.*;
 
 public class NoteSystem implements INoteSystem {
@@ -7,11 +15,16 @@ public class NoteSystem implements INoteSystem {
 	List<INote> notes;
 	Map<String, List<Integer>> scales;
 	List<IChordFormula> chordFormulas;
+	List<Integer> baseScale;
+	private final ChordUtils chordUtils;
 
 	public NoteSystem() {
 		notes = initNotes();
 		scales = initScales();
 		chordFormulas = initChordFormulas();
+
+		baseScale = scales.get("Major");	// TODO: move into a factory or something...
+		chordUtils = new ChordUtils(baseScale);
 	}
 
 	private List<IChordFormula> initChordFormulas() {
@@ -137,7 +150,41 @@ public class NoteSystem implements INoteSystem {
 	}
 
 	@Override public void addScalePattern(String name, List<Integer> scalePattern) {
+		scales.put(name, scalePattern);
+	}
 
+	public IChord<IRelativeNote> buildChord(String rootNote, String chordName){
+		IChordFormula chordFormula = getChordFormula(chordName);
+		Map<Integer, Boolean> relativeChordNotes = chordUtils.getRelativeNotesFromFormula(chordFormula.getOriginalFormula());
+		IChord<IRelativeNote> chordRelativeToChromatic = new RelativeChord();
+
+		for (Map.Entry<Integer, Boolean> noteRelativeToBaseScale : relativeChordNotes.entrySet()) {
+			int chromaticIndex = sumUp(noteRelativeToBaseScale.getKey());
+			IRelativeNote noteRelativeToChromaticScale = new RelativeNote(chromaticIndex);
+			chordRelativeToChromatic.addNote(noteRelativeToChromaticScale, noteRelativeToBaseScale.getValue());
+		}
+
+		return chordRelativeToChromatic;
+	}
+
+	private IChordFormula getChordFormulaByName(String formulaName) {
+		for (IChordFormula chordFormula : chordFormulas) {
+			if (chordFormula.getChordName().equalsIgnoreCase(formulaName)) {
+				return chordFormula;
+			}
+		}
+		return null;
+	}
+
+	private int sumUp(int maxIndex) {
+		int sum = 0;
+
+		for (int i = 0; i < maxIndex; i++) {
+			int normalisedIndex = i % (baseScale.size()-1);
+			sum += baseScale.get(normalisedIndex);
+		}
+
+		return sum;
 	}
 
 	@Override public double getStandardPitch() {

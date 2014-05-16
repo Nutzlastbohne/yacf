@@ -1,4 +1,6 @@
-package org.waagh.yacf.app.model;
+package org.waagh.yacf.app.model.chords;
+
+import org.waagh.yacf.app.model.IChordFormula;
 
 import java.util.ArrayList;
 import java.util.List;

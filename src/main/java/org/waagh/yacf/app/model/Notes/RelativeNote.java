@@ -1,6 +1,8 @@
-package org.waagh.yacf.app.model;
+package org.waagh.yacf.app.model.Notes;
 
-public class RelativeNote implements IRelativeNote{
+import org.waagh.yacf.app.model.IRelativeNote;
+
+public class RelativeNote implements IRelativeNote {
 
 	private int relativePosition;
 

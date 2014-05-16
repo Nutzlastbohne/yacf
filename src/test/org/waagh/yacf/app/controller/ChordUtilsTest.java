@@ -1,13 +1,12 @@
 package org.waagh.yacf.app.controller;
 
+import junit.framework.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.waagh.yacf.app.model.IChordFormula;
-import org.waagh.yacf.app.model.IRelativeNote;
 import org.waagh.yacf.app.model.NoteSystem;
-import org.waagh.yacf.app.model.RelativeNote;
 
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ChordUtilsTest {
@@ -24,9 +23,53 @@ public class ChordUtilsTest {
 	}
 
 	@Test
-	public void getRelativeNotesFromFormula(){
-		IChordFormula formula = ns.getChordFormula("Maj7");
-		Map<IRelativeNote, Boolean> chordNotes = chordUtils.getRelativeNotesFromFormula(formula.getOriginalFormula());
-		System.out.println("Got " + chordNotes);
+	public void getMaj7Formula(){
+		String error = "Chords for %s don't match!\nexp:\t%s\nact:\t%s";
+		String formulaName = "Maj7";
+		IChordFormula formula = ns.getChordFormula(formulaName);
+		Map<Integer, Boolean> expected = new HashMap<>();
+		expected.put(0, false);
+		expected.put(2, false);
+		expected.put(4, false);
+		expected.put(6, false);
+
+		Map<Integer, Boolean> actual = chordUtils.getRelativeNotesFromFormula(formula.getOriginalFormula());
+		Assert.assertTrue(String.format(error, formulaName, expected, actual), expected.equals(actual));
+	}
+
+	@Test
+	public void getDom13Formula(){
+		String error = "Chords for %s don't match!\nexp:\t%s\nact:\t%s";
+		String formulaName = "13";
+		IChordFormula formula = ns.getChordFormula(formulaName);
+		Map<Integer, Boolean> expected = new HashMap<>();
+		expected.put(0, false);
+		expected.put(2, false);
+		expected.put(4, false);
+		expected.put(5, false);
+		expected.put(8, true);
+		expected.put(10, true);
+		expected.put(12, false);
+
+		Map<Integer, Boolean> actual = chordUtils.getRelativeNotesFromFormula(formula.getOriginalFormula());
+		Assert.assertTrue(String.format(error, formulaName, expected, actual), expected.equals(actual));
+	}
+
+	@Test
+	public void getmFormula(){
+		String error = "Chords for %s don't match!\nexp:\t%s\nact:\t%s";
+		String formulaName = "13";
+		IChordFormula formula = ns.getChordFormula(formulaName);
+		Map<Integer, Boolean> expected = new HashMap<>();
+		expected.put(0, false);
+		expected.put(2, false);
+		expected.put(4, false);
+		expected.put(5, false);
+		expected.put(8, true);
+		expected.put(10, true);
+		expected.put(12, false);
+
+		Map<Integer, Boolean> actual = chordUtils.getRelativeNotesFromFormula(formula.getOriginalFormula());
+		Assert.assertTrue(String.format(error, formulaName, expected, actual), expected.equals(actual));
 	}
 }

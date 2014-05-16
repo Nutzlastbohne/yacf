@@ -1,9 +1,7 @@
 package org.waagh.yacf.app.controller;
 
-import org.waagh.yacf.app.model.IAbsoluteNote;
+import org.waagh.yacf.app.model.Notes.IAbsoluteNote;
 import org.waagh.yacf.app.model.IChordFormula;
-import org.waagh.yacf.app.model.IRelativeNote;
-import org.waagh.yacf.app.model.RelativeNote;
 
 import java.util.*;
 
@@ -72,9 +70,9 @@ public class ChordUtils {
 		return scaleNotes;
 	}
 
-	public Map<IRelativeNote, Boolean> getRelativeNotesFromFormula(String formula) {
+	public Map<Integer, Boolean> getRelativeNotesFromFormula(String formula) {
 		//TODO must match PRIMITIVE_NOTE_MATCH
-		Map<IRelativeNote, Boolean> chordNotes = new HashMap<>();
+		Map<Integer, Boolean> chordNotes = new HashMap<>();
 		String formulaParts[] = formula.split("-");
 		int scaleSize = baseScale.size();
 
@@ -83,8 +81,8 @@ public class ChordUtils {
 			int offset = getOffsetFromFormulaPart(formulaPart);
 			boolean isOptional = isOptional(formulaPart);
 
-			IRelativeNote chordNote = new RelativeNote(relativeIndex + offset);
-			chordNotes.put(chordNote, isOptional);
+//			IRelativeNote chordNote = new RelativeNote(relativeIndex + offset);
+			chordNotes.put(relativeIndex + offset, isOptional);
 		}
 
 		return chordNotes;

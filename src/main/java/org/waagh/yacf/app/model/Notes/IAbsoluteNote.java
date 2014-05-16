@@ -1,4 +1,4 @@
-package org.waagh.yacf.app.model;
+package org.waagh.yacf.app.model.Notes;
 
 public interface IAbsoluteNote {
 
