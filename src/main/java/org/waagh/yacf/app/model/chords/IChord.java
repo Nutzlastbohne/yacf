@@ -18,4 +18,8 @@ public interface IChord<T> {
 	Collection<T> getMandatoryNotes();
 
 	Collection<T> getOptionalNotes();
+
+	void put(T note, boolean isOptional);
+
+	boolean chordMatches(IChord<T> otherChord);
 }

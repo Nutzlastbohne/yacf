@@ -49,4 +49,12 @@ public class AbsoluteChord implements IChord<IAbsoluteNote> {
 	@Override public List<IAbsoluteNote> getOptionalNotes() {
 		return null;
 	}
+
+	@Override public void put(IAbsoluteNote note, boolean isOptional) {
+
+	}
+
+	@Override public boolean chordMatches(IChord<IAbsoluteNote> otherChord) {
+		return false;
+	}
 }

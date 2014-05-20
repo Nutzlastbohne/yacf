@@ -31,7 +31,7 @@ public class NoteSystemTest {
 	}
 
 	private boolean test(String root, String chord, List<Integer> expected){
-		IChord<IRelativeNote> actualPositions = noteSystem.buildChord(root, chord);
+		IChord<IRelativeNote> actualPositions = noteSystem.buildRelativeChord(root, chord);
 		boolean chordsMatch = chordMatches(expected, actualPositions);
 		Assert.assertTrue(String.format(error, root + chord, expected, actualPositions), chordsMatch);
 		return false;

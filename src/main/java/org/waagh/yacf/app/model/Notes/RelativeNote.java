@@ -15,6 +15,6 @@ public class RelativeNote implements IRelativeNote {
 	}
 
 	@Override public String toString() {
-		return "RelativeNote(" + relativePosition +")";
+		return String.valueOf(relativePosition);
 	}
 }

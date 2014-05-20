@@ -153,18 +153,9 @@ public class NoteSystem implements INoteSystem {
 		scales.put(name, scalePattern);
 	}
 
-	public IChord<IRelativeNote> buildChord(String rootNote, String chordName){
+	public IChord<IRelativeNote> buildRelativeChord(String rootNote, String chordName){
 		IChordFormula chordFormula = getChordFormula(chordName);
-		Map<Integer, Boolean> relativeChordNotes = chordUtils.getRelativeNotesFromFormula(chordFormula.getOriginalFormula());
-		IChord<IRelativeNote> chordRelativeToChromatic = new RelativeChord();
-
-		for (Map.Entry<Integer, Boolean> noteRelativeToBaseScale : relativeChordNotes.entrySet()) {
-			int chromaticIndex = sumUp(noteRelativeToBaseScale.getKey());
-			IRelativeNote noteRelativeToChromaticScale = new RelativeNote(chromaticIndex);
-			chordRelativeToChromatic.addNote(noteRelativeToChromaticScale, noteRelativeToBaseScale.getValue());
-		}
-
-		return chordRelativeToChromatic;
+		return chordUtils.getRelativeNotesFromFormula(chordFormula.getOriginalFormula());
 	}
 
 	private IChordFormula getChordFormulaByName(String formulaName) {
@@ -174,17 +165,6 @@ public class NoteSystem implements INoteSystem {
 			}
 		}
 		return null;
-	}
-
-	private int sumUp(int maxIndex) {
-		int sum = 0;
-
-		for (int i = 0; i < maxIndex; i++) {
-			int normalisedIndex = i % (baseScale.size()-1);
-			sum += baseScale.get(normalisedIndex);
-		}
-
-		return sum;
 	}
 
 	@Override public double getStandardPitch() {

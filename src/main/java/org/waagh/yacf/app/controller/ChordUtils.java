@@ -1,22 +1,26 @@
 package org.waagh.yacf.app.controller;
 
+import org.waagh.yacf.app.model.IRelativeNote;
 import org.waagh.yacf.app.model.Notes.IAbsoluteNote;
 import org.waagh.yacf.app.model.IChordFormula;
+import org.waagh.yacf.app.model.Notes.RelativeNote;
+import org.waagh.yacf.app.model.chords.IChord;
+import org.waagh.yacf.app.model.chords.RelativeChord;
 
 import java.util.*;
 
 /*
-	TODO: Build formula from Chord Name
-	TODO:
+	TODO: rename -> ChordBuilder
  */
 public class ChordUtils {
-
-	private List<Integer> baseScale;
-	private Map<String, String> replacements;
 
 	private static String PRIMITIVE_NOTE_MATCH = "[CDEFGAB]";
 	private static final char FLAT = 'b';
 	private static final char SHARP = '#';
+	private int noteCount;
+
+	private List<Integer> baseScale;
+	private Map<String, String> replacements;
 
 	/**
 	 * Initialize the ChordUtils class with the default western scale (Major)
@@ -46,6 +50,7 @@ public class ChordUtils {
 
 	public ChordUtils(int... baseScale) {
 		this();
+		this.noteCount = 12;
 		this.baseScale = new ArrayList<>();
 		for (int scalePos : baseScale) {
 			this.baseScale.add(scalePos);
@@ -70,19 +75,31 @@ public class ChordUtils {
 		return scaleNotes;
 	}
 
-	public Map<Integer, Boolean> getRelativeNotesFromFormula(String formula) {
+	private int sumUp(int maxIndex) {
+		int sum = 0;
+
+		for (int i = 0; i < maxIndex; i++) {
+			int normalisedIndex = i % (baseScale.size()-1);
+			sum += baseScale.get(normalisedIndex);
+		}
+
+		return sum;
+	}
+
+	public IChord<IRelativeNote> getRelativeNotesFromFormula(String formula) {
 		//TODO must match PRIMITIVE_NOTE_MATCH
-		Map<Integer, Boolean> chordNotes = new HashMap<>();
+		IChord<IRelativeNote> chordNotes = new RelativeChord();
 		String formulaParts[] = formula.split("-");
 		int scaleSize = baseScale.size();
 
 		for (String formulaPart : formulaParts) {
 			int relativeIndex = getIndexFromFormulaPart(formulaPart) - 1;
 			int offset = getOffsetFromFormulaPart(formulaPart);
+			int chromaticIndex = sumUp(relativeIndex) + offset;
 			boolean isOptional = isOptional(formulaPart);
 
-//			IRelativeNote chordNote = new RelativeNote(relativeIndex + offset);
-			chordNotes.put(relativeIndex + offset, isOptional);
+			IRelativeNote chordNote = new RelativeNote(chromaticIndex);
+			chordNotes.put(chordNote, isOptional);
 		}
 
 		return chordNotes;
