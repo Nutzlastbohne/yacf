@@ -1,35 +1,23 @@
 package org.waagh.yacf.app.model.chords;
 
-import org.waagh.yacf.app.model.IRelativeNote;
-import org.waagh.yacf.app.model.Notes.RelativeNote;
-
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class RelativeChord extends AbstractChord {
+public class RelativeChord extends AbstractChord<Integer> {
+
+	String name;
 
 	public RelativeChord() {
-		chordNotes = new ConcurrentHashMap<>();
+		super();
 	}
 
-	public RelativeChord(Map<IRelativeNote, Boolean> chordNotes) {
-		this.chordNotes = chordNotes;
+	public RelativeChord(String name, Map<Integer, Boolean> chordNotes) {
+		super(name);
+		chordNotes = chordNotes;
 	}
 
-	public RelativeChord(List<Integer> chordNotes) {
-		this();
-		for (Integer chordNote : chordNotes) {
-			this.chordNotes.put(new RelativeNote(chordNote), false);
-		}
-	}
-
-	@Override public Collection addNote(Object newNote, boolean isOptional) {
-		return null;
-	}
-
-	@Override public void put(Object note, boolean isOptional) {
-
+	public RelativeChord(String name, List<Integer> chordNotes) {
+		super(name);
+		putAll(chordNotes);
 	}
 }

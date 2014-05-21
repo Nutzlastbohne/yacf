@@ -3,12 +3,23 @@ package org.waagh.yacf.app.controller;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.waagh.yacf.app.model.*;
+import org.waagh.yacf.app.model.NoteSystem;
+import org.waagh.yacf.app.model.Notes.AbsoluteNote;
+import org.waagh.yacf.app.model.Notes.IAbsoluteNote;
 import org.waagh.yacf.app.model.chords.IChord;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class NoteSystemTest {
+
+	/**
+	 * 0  1  2  3  4  5  6  7  8  9  10 11
+	 * 1  2  3  4  5  6  7  8  9  10 11 12
+	 * C  C# D  D# E  F  F# G  G# A  A# B
+	 * 1     2     3  4     5     6     7
+	 */
 
 	NoteSystem noteSystem;
 	private static final String error = "Chord notes for %s dont match!\nexpected:\t%s\nactual\t\t%s";
@@ -19,30 +30,46 @@ public class NoteSystemTest {
 	}
 
 	@Test
-	public void buildMaj(){
+	public void getNextNote() {
+		noteSystem.getBasicNotes();
+	}
+
+	@Test void getPreviousNote() {
+
+	}
+
+	@Test
+	public void buildMaj() {
 		List<Integer> expectedPositions = Arrays.asList(0, 4, 7);
 		test("C", "Maj", expectedPositions);
 	}
 
 	@Test
-	public void buildMinorMaj13(){
+	public void buildMinorMaj13() {
 		List<Integer> expectedPositions = Arrays.asList(0, 3, 7, 11, 14, 17, 21);
 		test("C", "m/Maj13", expectedPositions);
 	}
 
-	private boolean test(String root, String chord, List<Integer> expected){
-		IChord<IRelativeNote> actualPositions = noteSystem.buildRelativeChord(root, chord);
+	@Test
+	public void buildCMaj() {
+		IAbsoluteNote rootNote = new AbsoluteNote(null, 0);
+	}
+
+	private boolean test(String root, String chord, List<Integer> expected) {
+		IChord<Integer> actualPositions = noteSystem.buildRelativeChord(chord);
 		boolean chordsMatch = chordMatches(expected, actualPositions);
 		Assert.assertTrue(String.format(error, root + chord, expected, actualPositions), chordsMatch);
 		return false;
 	}
 
-	private boolean chordMatches(Collection<Integer> expected, IChord<IRelativeNote> actual){
+	private boolean chordMatches(Collection<Integer> expected, IChord<Integer> actual) {
 		boolean isMatch = false;
 
-		for (IRelativeNote note : actual.getNotes()) {
-			isMatch = expected.contains(note.getRelativePosition());
-			if (!isMatch) break;
+		for (int note : actual.getNotes().keySet()) {
+			isMatch = expected.contains(note);
+			if (!isMatch) {
+				break;
+			}
 		}
 
 		return isMatch;

@@ -1,9 +1,10 @@
 package org.waagh.yacf.app.model;
 
-import org.waagh.yacf.app.controller.ChordUtils;
+import org.waagh.yacf.app.controller.ChordBuilder;
 import org.waagh.yacf.app.model.Notes.BasicNote;
+import org.waagh.yacf.app.model.Notes.IAbsoluteNote;
 import org.waagh.yacf.app.model.Notes.INote;
-import org.waagh.yacf.app.model.Notes.RelativeNote;
+import org.waagh.yacf.app.model.chords.AbsoluteChord;
 import org.waagh.yacf.app.model.chords.ChordFormula;
 import org.waagh.yacf.app.model.chords.IChord;
 import org.waagh.yacf.app.model.chords.RelativeChord;
@@ -12,19 +13,19 @@ import java.util.*;
 
 public class NoteSystem implements INoteSystem {
 
-	List<INote> notes;
+	List<INote> basicNotes;
 	Map<String, List<Integer>> scales;
 	List<IChordFormula> chordFormulas;
 	List<Integer> baseScale;
-	private final ChordUtils chordUtils;
+	private final ChordBuilder chordBuilder;
 
 	public NoteSystem() {
-		notes = initNotes();
+		basicNotes = initNotes();
 		scales = initScales();
 		chordFormulas = initChordFormulas();
 
-		baseScale = scales.get("Major");	// TODO: move into a factory or something...
-		chordUtils = new ChordUtils(baseScale);
+		baseScale = scales.get("Major");    // TODO: move into a factory or something...
+		chordBuilder = new ChordBuilder(baseScale);
 	}
 
 	private List<IChordFormula> initChordFormulas() {
@@ -81,7 +82,8 @@ public class NoteSystem implements INoteSystem {
 		chordFormulas.add(new ChordFormula("-5", "Misc", "1-b5"));
 		chordFormulas.add(new ChordFormula("sus4", "Misc", "1-4-5"));
 		chordFormulas.add(new ChordFormula("sus2", "Misc", "1-2-5"));
-		chordFormulas.add(new ChordFormula("#11", "Misc", "1-5-#11"));;
+		chordFormulas.add(new ChordFormula("#11", "Misc", "1-5-#11"));
+		;
 
 		return chordFormulas;
 	}
@@ -98,7 +100,7 @@ public class NoteSystem implements INoteSystem {
 			ordinal++;
 		}
 
-		//link notes together
+		//link basicNotes together
 		for (INote basicNote : basicNotes) {
 			int previous = basicNotes.indexOf(basicNote) - 1;
 			int next = basicNotes.indexOf(basicNote) + 1;
@@ -153,9 +155,23 @@ public class NoteSystem implements INoteSystem {
 		scales.put(name, scalePattern);
 	}
 
-	public IChord<IRelativeNote> buildRelativeChord(String rootNote, String chordName){
+	public IChord<Integer> buildRelativeChord(String chordName) {
 		IChordFormula chordFormula = getChordFormula(chordName);
-		return chordUtils.getRelativeNotesFromFormula(chordFormula.getOriginalFormula());
+		IChord<Integer> relativeChord = new RelativeChord();
+		relativeChord.setName(chordName);
+		relativeChord.putAll(chordBuilder.getRelativeNotesFromFormula(chordFormula.getOriginalFormula()));
+		return relativeChord;
+	}
+
+	public IChord<IAbsoluteNote> buildAbsoluteChord(IAbsoluteNote rootNote, String chordName) {
+		IChord<Integer> relativeChord = buildRelativeChord(chordName);
+		IChord<IAbsoluteNote> absoluteChord = new AbsoluteChord();
+
+		for (Map.Entry<Integer, Boolean> relativeNote : relativeChord.getNotes().entrySet()) {
+
+		}
+
+		return null;
 	}
 
 	private IChordFormula getChordFormulaByName(String formulaName) {
@@ -165,6 +181,22 @@ public class NoteSystem implements INoteSystem {
 			}
 		}
 		return null;
+	}
+
+	public List<INote> getBasicNotes() {
+		return basicNotes;
+	}
+
+	public INote getBasicNoteByName(String name) {
+		INote returnNote = null;
+
+		for (INote basicNote : basicNotes) {
+			if(basicNote.getName().equalsIgnoreCase(name)) {
+				returnNote = basicNote;
+			}
+		}
+
+		return returnNote;
 	}
 
 	@Override public double getStandardPitch() {

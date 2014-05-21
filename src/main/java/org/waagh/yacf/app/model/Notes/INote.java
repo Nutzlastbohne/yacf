@@ -1,14 +1,11 @@
 package org.waagh.yacf.app.model.Notes;
 
 public interface INote {
-
-	public String getName();
-	public int getOrdinal();
-	public INote getNext();
-	public INote getPrevious();
-	INote setNext(INote nextNote);
-	INote setPrevious(INote previousNote);
+	String getName();
+	int getOrdinal();
+	INote getNext();
+	INote getPrevious();
+	void setNext(INote nextNote);
+	void setPrevious(INote previousNote);
 	INote getNoteXStepsAway(int steps);
-
-
 }

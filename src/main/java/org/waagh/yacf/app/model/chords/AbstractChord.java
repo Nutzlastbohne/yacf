@@ -1,76 +1,94 @@
 package org.waagh.yacf.app.model.chords;
 
-import org.waagh.yacf.app.model.IRelativeNote;
-import org.waagh.yacf.app.model.Notes.INote;
-
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class AbstractChord<T extends INote> implements IChord<T> {
-	Map<IRelativeNote, Boolean> chordNotes;
+public abstract class AbstractChord<T> implements IChord<T> {
+	private Map<T, Boolean> chordNotes;
+	private String name;
 
-	@Override public void setNoteState(int notePosition, boolean isOptional) {
-		chordNotes.entrySet().stream().filter(chordNote -> chordNote.getKey().getRelativePosition() == notePosition).forEach(chordNote -> {
+	protected AbstractChord() {
+		chordNotes = new HashMap<>();
+	}
+
+	public AbstractChord(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override public void setNoteState(T note, boolean isOptional) {
+		chordNotes.entrySet().stream().filter(chordNote -> chordNote == note).forEach(chordNote -> {
 			chordNote.setValue(isOptional);
 		});
 	}
 
-	@Override public Collection<IRelativeNote> getNotes() {
-		return chordNotes.keySet();
+	@Override public Map<T, Boolean> getNotes() {
+		return chordNotes;
 	}
 
-	@Override public Collection<IRelativeNote> addNotes(Collection<IRelativeNote> newNotes) {
-		for (IRelativeNote newNote : newNotes) {
+	@Override public void putAll(Collection<T> newNotes) {
+		for (T newNote : newNotes) {
 			chordNotes.put(newNote, false);
 		}
-
-		return null;
 	}
 
-	@Override public Collection<IRelativeNote> addNote(IRelativeNote newNote, boolean isOptional) {
-		chordNotes.put(newNote, isOptional);
-		return null;
+	@Override public void putAll(Map<T, Boolean> notes) {
+		chordNotes = notes;
 	}
 
-	@Override public Collection<IRelativeNote> setNotes(Collection<IRelativeNote> newNotes) {
-
-		return null;
-	}
-
-	@Override public void put(IRelativeNote note, boolean isOptional) {
+	@Override public void put(T note, boolean isOptional) {
 		chordNotes.put(note, isOptional);
 	}
 
-	@Override public boolean chordMatches(IChord<IRelativeNote> otherChord) {
+	//TODO: Refactor... to many returns
+	@Override public boolean chordMatches(IChord<T> otherChord) {
 		if (otherChord == null || this.chordNotes.size() != otherChord.getNotes().size()) {
 			return false;
 		}
 
-		for (Map.Entry<IRelativeNote, Boolean> NoteEntry : chordNotes.entrySet()) {
+		for (Map.Entry<T, Boolean> otherEntry : otherChord.getNotes().entrySet()) {
+			boolean keyPresent = chordNotes.containsKey(otherEntry.getKey());
+			if (keyPresent) {
+				boolean thisValue = chordNotes.get(otherEntry);
+				boolean thatValue = otherEntry.getValue();
 
+				if (thisValue == thatValue) {
+					continue;
+				}
+			}
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
-	@Override public Collection<IRelativeNote> getMandatoryNotes() {
-		return chordNotes.keySet().parallelStream().filter(notePos -> !chordNotes.get(notePos)).collect(Collectors.toList());
+	@Override public Collection<T> getMandatoryNotes() {
+		return chordNotes.keySet().parallelStream().filter(note -> !chordNotes.get(note)).collect(Collectors.toList());
 	}
 
-	@Override public Collection<IRelativeNote> getOptionalNotes() {
+	@Override public Collection<T> getOptionalNotes() {
 		return chordNotes.keySet().parallelStream().filter(chordNotes::get).collect(Collectors.toList());
 	}
 
 	@Override public String toString() {
-		String notesAsString = chordNotes.entrySet().parallelStream().sorted(
-				Comparator.comparingInt(k -> k.getKey().getRelativePosition())).map(
+		Comparator<Map.Entry<T, Boolean>> byKey = (e1, e2) -> Integer.compare(Integer.parseInt(e1.getKey().toString()), Integer.parseInt(e2.getKey().toString()));
+
+		String notesAsString = chordNotes.entrySet().parallelStream().sorted(byKey).map(
 				k -> {
 					if (k.getValue()) {
-						return "(" + k.getKey().getRelativePosition() + ")";
+						return "(" + k.getKey().toString() + ")";
 					} else {
-						return String.valueOf(k.getKey().getRelativePosition());
+						return String.valueOf(k.getKey().toString());
 					}
 				}
 		).collect(Collectors.joining(" - "));
