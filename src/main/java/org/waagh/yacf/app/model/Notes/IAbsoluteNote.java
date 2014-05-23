@@ -1,13 +1,13 @@
 package org.waagh.yacf.app.model.Notes;
 
-public interface IAbsoluteNote extends INote{
+public interface IAbsoluteNote extends INote<IAbsoluteNote> {
 	int getOctave();
-	int setOctave();
+	void setOctave(int octave);
 	INote getBasicNote();
-	INote setBasicNote();
+	void setBasicNote(INote basicNote);
 	IAbsoluteNote getNext();
-	IAbsoluteNote setNext();
+//	IAbsoluteNote setNext();
 	IAbsoluteNote getPrevious();
-	IAbsoluteNote setPrevious();
+//	IAbsoluteNote setPrevious();
 
 }

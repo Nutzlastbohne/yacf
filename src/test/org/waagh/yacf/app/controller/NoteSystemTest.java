@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.waagh.yacf.app.model.NoteSystem;
 import org.waagh.yacf.app.model.Notes.AbsoluteNote;
 import org.waagh.yacf.app.model.Notes.IAbsoluteNote;
+import org.waagh.yacf.app.model.Notes.INote;
 import org.waagh.yacf.app.model.chords.IChord;
 
 import java.util.Arrays;
@@ -31,11 +32,28 @@ public class NoteSystemTest {
 
 	@Test
 	public void getNextNote() {
-		noteSystem.getBasicNotes();
+		INote<INote> testNote = noteSystem.getBasicNoteByName("D");
+		String actualName = testNote.getNext().getName();
+		String expectedName = "D#";
+		Assert.assertEquals("Unexpected note after 'D'", expectedName, actualName);
+
+		testNote = noteSystem.getBasicNoteByName("G#");
+		actualName = testNote.getNext().getName();
+		expectedName = "A";
+		Assert.assertEquals("Unexpected note after 'G#'", expectedName, actualName);
 	}
 
-	@Test void getPreviousNote() {
+	@Test
+	public void getPreviousNote() {
+		INote<INote> testNote = noteSystem.getBasicNoteByName("D");
+		String actualName = testNote.getPrevious().getName();
+		String expectedName = "C#";
+		Assert.assertEquals("Unexpected note before 'C#'", expectedName, actualName);
 
+		testNote = noteSystem.getBasicNoteByName("A");
+		actualName = testNote.getPrevious().getName();
+		expectedName = "G#";
+		Assert.assertEquals("Unexpected note before 'A#'", expectedName, actualName);
 	}
 
 	@Test
@@ -52,7 +70,7 @@ public class NoteSystemTest {
 
 	@Test
 	public void buildCMaj() {
-		IAbsoluteNote rootNote = new AbsoluteNote(null, 0);
+//		IAbsoluteNote rootNote = new AbsoluteNote(null, 0);
 	}
 
 	private boolean test(String root, String chord, List<Integer> expected) {

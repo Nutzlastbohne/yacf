@@ -1,11 +1,10 @@
 package org.waagh.yacf.app.model.Notes;
 
-
-public abstract class AbstractNote<T> implements INote {
+public class AbstractNote<T extends INote> implements INote<T> {
 
 	private String name;
-	private INote previousNote;
-	private INote nextNote;
+	private T previousNote;
+	private T nextNote;
 	private int ordinal;
 
 	public AbstractNote(String name, int ordinal) {
@@ -21,29 +20,29 @@ public abstract class AbstractNote<T> implements INote {
 		return ordinal;
 	}
 
-	@Override public INote getNext() {
+	@Override public T getNext() {
 		return nextNote;
 	}
 
-	@Override public INote getPrevious() {
+	@Override public T getPrevious() {
 		return previousNote;
 	}
 
-	@Override public void setNext(INote nextNote) {
+	@Override public void setNext(T nextNote) {
 		this.nextNote = nextNote;
 	}
 
-	@Override public void setPrevious(INote previousNote) {
+	@Override public void setPrevious(T previousNote) {
 		this.previousNote = previousNote;
 	}
 
-	@Override public INote getNoteXStepsAway(int steps) {
-		INote distantNote = this;
+	@Override public T getNoteXStepsAway(int steps) {
+		T distantNote = (T) this;
 		boolean moveBackwards = steps < 0;
 		steps = Math.abs(steps);
 
 		while (steps > 0) {
-			distantNote = moveBackwards ? distantNote.getPrevious() : distantNote.getNext();
+			distantNote = (T) (moveBackwards ? distantNote.getPrevious() : distantNote.getNext());
 			steps--;
 		}
 
