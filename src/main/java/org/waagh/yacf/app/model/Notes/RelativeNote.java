@@ -1,20 +1,18 @@
 package org.waagh.yacf.app.model.Notes;
 
-import org.waagh.yacf.app.model.IRelativeNote;
-
 public class RelativeNote implements IRelativeNote {
 
-	private int relativePosition;
+	private int position;
 
-	public RelativeNote(int relativePosition) {
-		this.relativePosition = relativePosition;
+	public RelativeNote(int position) {
+		this.position = position;
 	}
 
-	public int getRelativePosition() {
-		return relativePosition;
+	public int getPosition() {
+		return position;
 	}
 
 	@Override public String toString() {
-		return String.valueOf(relativePosition);
+		return String.valueOf(position);
 	}
 }

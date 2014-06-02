@@ -2,6 +2,8 @@ package org.waagh.yacf.app.controller;
 
 import org.waagh.yacf.app.model.IChordFormula;
 import org.waagh.yacf.app.model.Notes.IAbsoluteNote;
+import org.waagh.yacf.app.model.Notes.IRelativeNote;
+import org.waagh.yacf.app.model.Notes.RelativeNote;
 
 import java.util.*;
 
@@ -79,8 +81,8 @@ public class ChordBuilder {
 		return sum;
 	}
 
-	public Map<Integer, Boolean> getRelativeNotesFromFormula(String formula) {
-		Map<Integer, Boolean> chordNotes = new HashMap<>();
+	public Map<IRelativeNote, Boolean> getRelativeNotesFromFormula(String formula) {
+		Map<IRelativeNote, Boolean> chordNotes = new HashMap<>();
 		String formulaParts[] = formula.split("-");
 
 		for (String formulaPart : formulaParts) {
@@ -89,7 +91,7 @@ public class ChordBuilder {
 			int chromaticIndex = sumUp(relativeIndex) + offset;
 			boolean isOptional = isOptional(formulaPart);
 
-			chordNotes.put(chromaticIndex, isOptional);
+			chordNotes.put(new RelativeNote(chromaticIndex), isOptional);
 		}
 
 		return chordNotes;

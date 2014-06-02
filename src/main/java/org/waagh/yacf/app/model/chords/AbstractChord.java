@@ -1,12 +1,15 @@
 package org.waagh.yacf.app.model.chords;
 
+import org.waagh.yacf.app.model.Notes.INote;
+import org.waagh.yacf.app.model.Notes.INotePosition;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public abstract class AbstractChord<T> implements IChord<T> {
+public abstract class AbstractChord<T extends INotePosition> implements IChord<T> {
 	private Map<T, Boolean> chordNotes;
 	private String name;
 
@@ -27,9 +30,9 @@ public abstract class AbstractChord<T> implements IChord<T> {
 	}
 
 	@Override public void setNoteState(T note, boolean isOptional) {
-		chordNotes.entrySet().stream().filter(chordNote -> chordNote == note).forEach(chordNote -> {
-			chordNote.setValue(isOptional);
-		});
+		chordNotes.entrySet().stream()
+				.filter(chordNote -> chordNote == note)
+				.forEach(chordNote -> chordNote.setValue(isOptional));
 	}
 
 	@Override public Map<T, Boolean> getNotes() {
@@ -81,14 +84,14 @@ public abstract class AbstractChord<T> implements IChord<T> {
 	}
 
 	@Override public String toString() {
-		Comparator<Map.Entry<T, Boolean>> byKey = (e1, e2) -> Integer.compare(Integer.parseInt(e1.getKey().toString()), Integer.parseInt(e2.getKey().toString()));
+		Comparator<Map.Entry<T, Boolean>> byKey = (e1, e2) -> Integer.compare(e1.getKey().getPosition(), e2.getKey().getPosition());
 
 		String notesAsString = chordNotes.entrySet().parallelStream().sorted(byKey).map(
 				k -> {
 					if (k.getValue()) {
-						return "(" + k.getKey().toString() + ")";
+						return "(" + k.getKey().getPosition() + ")";
 					} else {
-						return String.valueOf(k.getKey().toString());
+						return String.valueOf(k.getKey().getPosition());
 					}
 				}
 		).collect(Collectors.joining(" - "));

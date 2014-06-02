@@ -4,9 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.waagh.yacf.app.model.NoteSystem;
-import org.waagh.yacf.app.model.Notes.AbsoluteNote;
-import org.waagh.yacf.app.model.Notes.IAbsoluteNote;
-import org.waagh.yacf.app.model.Notes.INote;
+import org.waagh.yacf.app.model.Notes.*;
 import org.waagh.yacf.app.model.chords.IChord;
 
 import java.util.Arrays;
@@ -59,32 +57,56 @@ public class NoteSystemTest {
 	@Test
 	public void buildMaj() {
 		List<Integer> expectedPositions = Arrays.asList(0, 4, 7);
-		test("C", "Maj", expectedPositions);
+		test("Maj", expectedPositions);
 	}
 
 	@Test
 	public void buildMinorMaj13() {
 		List<Integer> expectedPositions = Arrays.asList(0, 3, 7, 11, 14, 17, 21);
-		test("C", "m/Maj13", expectedPositions);
+		test("m/Maj13", expectedPositions);
 	}
 
 	@Test
 	public void buildCMaj() {
-//		IAbsoluteNote rootNote = new AbsoluteNote(null, 0);
+		int basicNotes = noteSystem.getBasicNotes().size();
+		int rootNoteOctave = 5;
+		int noteOffset = basicNotes * rootNoteOctave;
+		List<Integer> expectedPositions = Arrays.asList(noteOffset + 0, noteOffset + 4, noteOffset + 7);
+		INote rootNote = noteSystem.getBasicNoteByName("C");
+		IAbsoluteNote absoluteRootNote = new AbsoluteNote(rootNote, rootNoteOctave);
+		test(absoluteRootNote, "Maj", expectedPositions);
 	}
 
-	private boolean test(String root, String chord, List<Integer> expected) {
-		IChord<Integer> actualPositions = noteSystem.buildRelativeChord(chord);
+	@Test
+	public void buildCMinorMaj13() {
+		int basicNotes = noteSystem.getBasicNotes().size();
+		int rootNoteOctave = 5;
+		int noteOffset = basicNotes * rootNoteOctave;
+		List<Integer> expectedPositions = Arrays.asList(noteOffset + 0, noteOffset + 3, noteOffset + 7, noteOffset + 11, noteOffset + 14, noteOffset + 17, noteOffset + 21);
+		INote rootNote = noteSystem.getBasicNoteByName("C");
+		IAbsoluteNote absoluteRootNote = new AbsoluteNote(rootNote, rootNoteOctave);
+		test(absoluteRootNote, "m/Maj13", expectedPositions);
+	}
+
+	private boolean test(String chord, List<Integer> expected) {
+		IChord<IRelativeNote> actualPositions = noteSystem.buildRelativeChord(chord);
 		boolean chordsMatch = chordMatches(expected, actualPositions);
-		Assert.assertTrue(String.format(error, root + chord, expected, actualPositions), chordsMatch);
+		Assert.assertTrue(String.format(error, chord, expected, actualPositions), chordsMatch);
 		return false;
 	}
 
-	private boolean chordMatches(Collection<Integer> expected, IChord<Integer> actual) {
+	private boolean test(IAbsoluteNote rootNote, String chord, List<Integer> expected) {
+		IChord<IAbsoluteNote> actualPositions = noteSystem.buildAbsoluteChord(rootNote, chord);
+		boolean chordsMatch = chordMatches(expected, actualPositions);
+		Assert.assertTrue(String.format(error, rootNote + chord, expected, actualPositions), chordsMatch);
+		return false;
+	}
+
+	private boolean chordMatches(Collection<Integer> expected, IChord<? extends INotePosition> actual) {
 		boolean isMatch = false;
 
-		for (int note : actual.getNotes().keySet()) {
-			isMatch = expected.contains(note);
+		for (INotePosition note : actual.getNotes().keySet()) {
+			isMatch = expected.contains(note.getPosition());
 			if (!isMatch) {
 				break;
 			}

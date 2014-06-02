@@ -1,9 +1,7 @@
 package org.waagh.yacf.app.model;
 
 import org.waagh.yacf.app.controller.ChordBuilder;
-import org.waagh.yacf.app.model.Notes.BasicNote;
-import org.waagh.yacf.app.model.Notes.IAbsoluteNote;
-import org.waagh.yacf.app.model.Notes.INote;
+import org.waagh.yacf.app.model.Notes.*;
 import org.waagh.yacf.app.model.chords.AbsoluteChord;
 import org.waagh.yacf.app.model.chords.ChordFormula;
 import org.waagh.yacf.app.model.chords.IChord;
@@ -90,7 +88,7 @@ public class NoteSystem implements INoteSystem {
 
 	private List<INote> initNotes() {    //TODO Abstract Candidate?
 		List<INote> basicNotes = new ArrayList<>();
-		List<String> basicNoteNames = Arrays.asList("C", "C#", "D", "D#", "E", "F", "G", "G#", "A", "A#", "B"); // TODO: this stuff has to come from a file, DB or User Input
+		List<String> basicNoteNames = Arrays.asList("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"); // TODO: this stuff has to come from a file, DB or User Input
 
 		//init
 		int ordinal = 0;
@@ -147,7 +145,7 @@ public class NoteSystem implements INoteSystem {
 		return chordFormula;
 	}
 
-	@Override public List<Integer> getNormalisedScalePattern(String scaleName) {
+	@Override public List<Integer> getNormalizedScalePattern(String scaleName) {
 		return null;
 	}
 
@@ -155,23 +153,27 @@ public class NoteSystem implements INoteSystem {
 		scales.put(name, scalePattern);
 	}
 
-	public IChord<Integer> buildRelativeChord(String chordName) {
+	public IChord<IRelativeNote> buildRelativeChord(String chordName) {
 		IChordFormula chordFormula = getChordFormula(chordName);
-		IChord<Integer> relativeChord = new RelativeChord();
+		IChord<IRelativeNote> relativeChord = new RelativeChord();
 		relativeChord.setName(chordName);
 		relativeChord.putAll(chordBuilder.getRelativeNotesFromFormula(chordFormula.getOriginalFormula()));
 		return relativeChord;
 	}
 
 	public IChord<IAbsoluteNote> buildAbsoluteChord(IAbsoluteNote rootNote, String chordName) {
-		IChord<Integer> relativeChord = buildRelativeChord(chordName);
+		IChord<IRelativeNote> relativeChord = buildRelativeChord(chordName);
 		IChord<IAbsoluteNote> absoluteChord = new AbsoluteChord();
 
-		for (Map.Entry<Integer, Boolean> relativeNote : relativeChord.getNotes().entrySet()) {
+		for (Map.Entry<IRelativeNote, Boolean> relativeNoteEntry : relativeChord.getNotes().entrySet()) {
+			INote baseNote = rootNote.getNoteXStepsAway(relativeNoteEntry.getKey().getPosition());
+			int octave = relativeNoteEntry.getKey().getPosition() / basicNotes.size() + rootNote.getOctave();
 
+			IAbsoluteNote absoluteNote = new AbsoluteNote(baseNote, octave);
+			absoluteChord.put(absoluteNote, relativeNoteEntry.getValue());
 		}
 
-		return null;
+		return absoluteChord;
 	}
 
 	private IChordFormula getChordFormulaByName(String formulaName) {
@@ -191,7 +193,7 @@ public class NoteSystem implements INoteSystem {
 		INote returnNote = null;
 
 		for (INote basicNote : basicNotes) {
-			if(basicNote.getName().equalsIgnoreCase(name)) {
+			if (basicNote.getName().equalsIgnoreCase(name)) {
 				returnNote = basicNote;
 			}
 		}
@@ -207,8 +209,8 @@ public class NoteSystem implements INoteSystem {
 		return 0;
 	}
 
-	@Override public int getAbsoluteIndex(INote note) {
-		return 0;
+	@Override public int getAbsoluteIndex(IAbsoluteNote note) {
+		return note.getPosition() + note.getOctave()*basicNotes.size();
 	}
 
 	@Override public int getRelativeIndex(INote note) {

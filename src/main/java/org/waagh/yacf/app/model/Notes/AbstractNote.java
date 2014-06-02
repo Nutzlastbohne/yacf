@@ -1,6 +1,6 @@
 package org.waagh.yacf.app.model.Notes;
 
-public class AbstractNote<T extends INote> implements INote<T> {
+public abstract class AbstractNote<T extends INote> implements INote<T> {
 
 	private String name;
 	private T previousNote;
@@ -47,5 +47,9 @@ public class AbstractNote<T extends INote> implements INote<T> {
 		}
 
 		return distantNote;
+	}
+
+	@Override public String toString() {
+		return name;
 	}
 }

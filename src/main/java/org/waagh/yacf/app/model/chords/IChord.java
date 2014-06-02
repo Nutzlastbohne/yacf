@@ -1,10 +1,13 @@
 package org.waagh.yacf.app.model.chords;
 
+import org.waagh.yacf.app.model.Notes.INote;
+import org.waagh.yacf.app.model.Notes.INotePosition;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public interface IChord<T> {
+public interface IChord<T extends INotePosition> {
 
 	String getName();
 

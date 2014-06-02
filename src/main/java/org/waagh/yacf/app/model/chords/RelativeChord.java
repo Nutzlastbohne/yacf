@@ -1,9 +1,11 @@
 package org.waagh.yacf.app.model.chords;
 
+import org.waagh.yacf.app.model.Notes.IRelativeNote;
+
 import java.util.List;
 import java.util.Map;
 
-public class RelativeChord extends AbstractChord<Integer> {
+public class RelativeChord extends AbstractChord<IRelativeNote> {
 
 	String name;
 
@@ -11,12 +13,12 @@ public class RelativeChord extends AbstractChord<Integer> {
 		super();
 	}
 
-	public RelativeChord(String name, Map<Integer, Boolean> chordNotes) {
+	public RelativeChord(String name, Map<IRelativeNote, Boolean> chordNotes) {
 		super(name);
-		chordNotes = chordNotes;
+		putAll(chordNotes);
 	}
 
-	public RelativeChord(String name, List<Integer> chordNotes) {
+	public RelativeChord(String name, List<IRelativeNote> chordNotes) {
 		super(name);
 		putAll(chordNotes);
 	}

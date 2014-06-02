@@ -1,6 +1,6 @@
 package org.waagh.yacf.app.model.Notes;
 
-public interface INote<T> {
+public interface INote<T> extends INotePosition {
 	String getName();
 	int getOrdinal();
 	T getNext();
