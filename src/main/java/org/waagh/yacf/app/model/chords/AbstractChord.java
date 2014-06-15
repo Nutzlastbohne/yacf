@@ -1,20 +1,19 @@
 package org.waagh.yacf.app.model.chords;
 
-import org.waagh.yacf.app.model.Notes.INote;
 import org.waagh.yacf.app.model.Notes.INotePosition;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class AbstractChord<T extends INotePosition> implements IChord<T> {
-	private Map<T, Boolean> chordNotes;
+	protected Map<T, Boolean> chordNotes;
 	private String name;
 
 	protected AbstractChord() {
-		chordNotes = new HashMap<>();
+		chordNotes = new LinkedHashMap<>();
 	}
 
 	public AbstractChord(String name) {
@@ -83,6 +82,23 @@ public abstract class AbstractChord<T extends INotePosition> implements IChord<T
 		return chordNotes.keySet().parallelStream().filter(chordNotes::get).collect(Collectors.toList());
 	}
 
+	@Override public int indexOf(T note) {
+		int noteIndex = -1;
+		if (chordNotes.containsKey(note)) {
+			for (Map.Entry<T, Boolean> chordNote : chordNotes.entrySet()) {
+				noteIndex++;
+				if (chordNote.getKey().equals(note)) {
+					break;
+				}
+			}
+		}
+
+		return noteIndex;
+	}
+
+	/**
+	 * TODO: Check if comparator still necessary. Shouldn't be, since moving from HashMap to LinkedHashMap will keep insertion order
+	 */
 	@Override public String toString() {
 		Comparator<Map.Entry<T, Boolean>> byKey = (e1, e2) -> Integer.compare(e1.getKey().getPosition(), e2.getKey().getPosition());
 
@@ -96,6 +112,6 @@ public abstract class AbstractChord<T extends INotePosition> implements IChord<T
 				}
 		).collect(Collectors.joining(" - "));
 
-		return String.format("RelativeChord {%s}", notesAsString);
+		return String.format("IChord {%s}", notesAsString);
 	}
 }

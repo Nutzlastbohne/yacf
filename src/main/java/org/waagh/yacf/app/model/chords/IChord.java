@@ -28,4 +28,6 @@ public interface IChord<T extends INotePosition> {
 	Collection<T> getOptionalNotes();
 
 	boolean chordMatches(IChord<T> otherChord);
+
+	int indexOf(T note);
 }

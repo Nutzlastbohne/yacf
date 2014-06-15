@@ -2,10 +2,7 @@ package org.waagh.yacf.app.model;
 
 import org.waagh.yacf.app.controller.ChordBuilder;
 import org.waagh.yacf.app.model.Notes.*;
-import org.waagh.yacf.app.model.chords.AbsoluteChord;
-import org.waagh.yacf.app.model.chords.ChordFormula;
-import org.waagh.yacf.app.model.chords.IChord;
-import org.waagh.yacf.app.model.chords.RelativeChord;
+import org.waagh.yacf.app.model.chords.*;
 
 import java.util.*;
 
@@ -153,21 +150,28 @@ public class NoteSystem implements INoteSystem {
 		scales.put(name, scalePattern);
 	}
 
-	public IChord<IRelativeNote> buildRelativeChord(String chordName) {
+	public IRelativeChord buildRelativeChord(String chordName) {
 		IChordFormula chordFormula = getChordFormula(chordName);
-		IChord<IRelativeNote> relativeChord = new RelativeChord();
+		IRelativeChord relativeChord = new RelativeChord();
 		relativeChord.setName(chordName);
 		relativeChord.putAll(chordBuilder.getRelativeNotesFromFormula(chordFormula.getOriginalFormula()));
 		return relativeChord;
 	}
 
-	public IChord<IAbsoluteNote> buildAbsoluteChord(IAbsoluteNote rootNote, String chordName) {
-		IChord<IRelativeNote> relativeChord = buildRelativeChord(chordName);
-		IChord<IAbsoluteNote> absoluteChord = new AbsoluteChord();
+	public IAbsoluteChord buildAbsoluteChord(String rootNoteName, String chordName) {
+		IAbsoluteNote rootNote = new AbsoluteNote(getBasicNoteByName(rootNoteName), 0);
+		return buildAbsoluteChord(rootNote, chordName);
+	}
+
+	public IAbsoluteChord buildAbsoluteChord(IAbsoluteNote rootNote, String chordName) {
+		IRelativeChord relativeChord = buildRelativeChord(chordName);
+		IAbsoluteChord absoluteChord = new AbsoluteChord();
 
 		for (Map.Entry<IRelativeNote, Boolean> relativeNoteEntry : relativeChord.getNotes().entrySet()) {
 			INote baseNote = rootNote.getNoteXStepsAway(relativeNoteEntry.getKey().getPosition());
-			int octave = relativeNoteEntry.getKey().getPosition() / basicNotes.size() + rootNote.getOctave();
+			int relativePosition = relativeNoteEntry.getKey().getPosition();
+			int offset = baseNote.getOrdinal();
+			int octave = (relativePosition + offset) / basicNotes.size() + rootNote.getOctave();
 
 			IAbsoluteNote absoluteNote = new AbsoluteNote(baseNote, octave);
 			absoluteChord.put(absoluteNote, relativeNoteEntry.getValue());
@@ -201,6 +205,10 @@ public class NoteSystem implements INoteSystem {
 		return returnNote;
 	}
 
+	public IAbsoluteNote buildAbsoluteNote(String name, int octave) {
+		return new AbsoluteNote(getBasicNoteByName(name), octave);
+	}
+
 	@Override public double getStandardPitch() {
 		return 0;
 	}
@@ -210,7 +218,7 @@ public class NoteSystem implements INoteSystem {
 	}
 
 	@Override public int getAbsoluteIndex(IAbsoluteNote note) {
-		return note.getPosition() + note.getOctave()*basicNotes.size();
+		return note.getPosition() + note.getOctave() * basicNotes.size();
 	}
 
 	@Override public int getRelativeIndex(INote note) {

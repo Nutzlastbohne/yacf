@@ -82,7 +82,7 @@ public class ChordBuilder {
 	}
 
 	public Map<IRelativeNote, Boolean> getRelativeNotesFromFormula(String formula) {
-		Map<IRelativeNote, Boolean> chordNotes = new HashMap<>();
+		Map<IRelativeNote, Boolean> chordNotes = new LinkedHashMap<>();
 		String formulaParts[] = formula.split("-");
 
 		for (String formulaPart : formulaParts) {

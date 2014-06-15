@@ -5,7 +5,7 @@ import org.waagh.yacf.app.model.Notes.IRelativeNote;
 import java.util.List;
 import java.util.Map;
 
-public class RelativeChord extends AbstractChord<IRelativeNote> {
+public class RelativeChord extends AbstractChord<IRelativeNote> implements IRelativeChord {
 
 	String name;
 
