@@ -168,8 +168,8 @@ public class NoteSystem implements INoteSystem {
 		IAbsoluteChord absoluteChord = new AbsoluteChord();
 
 		for (Map.Entry<IRelativeNote, Boolean> relativeNoteEntry : relativeChord.getNotes().entrySet()) {
-			INote baseNote = rootNote.getNoteXStepsAway(relativeNoteEntry.getKey().getPosition());
 			int relativePosition = relativeNoteEntry.getKey().getPosition();
+			INote baseNote = rootNote.getNoteXStepsAway(relativePosition);
 			int offset = baseNote.getOrdinal();
 			int octave = (relativePosition + offset) / basicNotes.size() + rootNote.getOctave();
 
