@@ -7,7 +7,7 @@ Chord implementation is not spot on:
         Currently I use AbsoluteNotes, ignoring the octave. But this seems clumsy.
         Problem is, RelativeChord doesn't know jack about BasicNotes.
         Also, RelativeChord needs mixture of relative and absolute Note 
-	-> Need to be able to track ranges larger than an octave, but don't need to track the whole note range.
+		-> Need to be able to track ranges larger than an octave, but don't need to track the whole note range.
         ... maybe something like a relativeOctave?
 
 ChordTab has a problem(?):
@@ -17,3 +17,44 @@ ChordTab has a problem(?):
         Sooo... just keep it as is and just retrofit the toString() Method?
         
 ChordTab support to quickly identify duplicate notes?
+
+
+---=== Ideas for next Iteration ===---
+
+Seems like it has no value for a note to know its absolute position.
+-> knowing amount of BasicNotes to calculate absolute position (with absolute octave) is superfluous
+
+INote
+- INote getNext()
+- INote getPrevious()
+- INote getNoteAtDistance(int x)
+
+Model:
+BasicNote<T ext BasicNote>
+- String symbol
+- int ordinal
+- BasicNote next/previous
+
+ChordNote ext BasicNote
+- boolean isOptional
+- int relativeOctave
+
+AbsoluteNote ext ChordNote
+- int absoluteOctave
+
+PlacedNote ext ChordNote
+- int String
+- int Fret
+
+BasicChord
+- String Name
+- int[] Pattern
+
+RelativeChord
+- ChordNote[]
+
+AbsoluteChord
+- AbsoluteNote[]
+
+Tab
+- PlacedNote[]
